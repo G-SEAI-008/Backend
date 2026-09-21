@@ -1,8 +1,5 @@
 // datatypes
-
-
 // numbers
-
 // int
 using System.Globalization;
 using System.Text;
@@ -90,7 +87,6 @@ var result = (double)10 / 3;
 Console.WriteLine($"{result}");
 
 
-
 try
 {
     checked
@@ -114,8 +110,6 @@ Console.WriteLine($"Unchecked wrap-around result: {wrapped}");
 
 string status = myAge > 18 ? "go" : "don't go";
 
-
-
 // strings
 
 string regular = "Hello World";
@@ -135,8 +129,6 @@ string name = "Alice";
 string interpolated = $"User: {name}";
 
 string concat = "Hello " + name;
-
-
 
 string phrase = "The quick brown fox jumps";
 
