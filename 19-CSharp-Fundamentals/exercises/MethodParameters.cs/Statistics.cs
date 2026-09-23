@@ -10,4 +10,13 @@ public static class Statistics
         return (a + b) / 2;
     }
 
+
+    //alternative
+    public static double Average(double[] doubles)
+    {
+        int length = doubles.Length;
+        var sum = doubles.Sum();
+        return sum / length;
+    }
+
 }

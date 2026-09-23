@@ -17,10 +17,12 @@ Console.WriteLine($"5: {result5}");
 Console.WriteLine($"{Statistics.Average(100, 23, 55)}");
 Console.WriteLine($"{Statistics.Average(100, 23)}");
 Console.WriteLine($"{Statistics.Average(100, 23, 0)}");
+Console.WriteLine($"{Statistics.Average([2, 3, 4, 5, 3, 2, 0])}");
 
 
 Console.WriteLine($"{Formatter.FormatNumber(2)}");
 Console.WriteLine($"{Formatter.FormatNumber(5.2342)}");
 Console.WriteLine($"{Formatter.FormatMessage("hello", 5)}");
+
 
 
