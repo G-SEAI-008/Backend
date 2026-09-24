@@ -141,9 +141,7 @@ class Program
         }
 
 
-
-
-        // helpers
+        //helpers
         string ReadNonEmpty(string prompt)
         {
             while (true)
@@ -180,9 +178,4 @@ class Program
         }
 
     }
-
-
-
-
-
 }
