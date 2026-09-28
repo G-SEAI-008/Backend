@@ -11,9 +11,11 @@ public class BasketItem
 
 public class ShoppingBasket
 {
+    // Feld
     private readonly List<BasketItem> _items = new();
 
 
+    // Eigenschaft
     public IReadOnlyCollection<BasketItem> Items => _items.AsReadOnly();
 
     public void AddItem(BasketItem item)
