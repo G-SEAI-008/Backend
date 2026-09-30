@@ -1,34 +1,52 @@
+using Infrastructure;
+
 using Models;
 using Services;
 
 namespace Service;
 
-class ProductDB : IProductInventoryService
+class ProductDbService : IProductInventoryService
 {
-    public IReadOnlyCollection<Product> Products => throw new NotImplementedException();
+
+    private readonly ProductInventoryContext _context;
+
+    public ProductDbService(ProductInventoryContext context)
+    {
+        _context = context;
+    }
+
+
+    public IReadOnlyCollection<Product> Products => _context.Products.ToList().AsReadOnly();
 
     public void Add(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Add(product);
+        _context.SaveChanges();
     }
 
     public void Add(IEnumerable<Product> products)
     {
-        throw new NotImplementedException();
+        _context.Products.AddRange(products);
+        _context.SaveChanges();
     }
 
     public Product? FindByName(string name)
     {
-        throw new NotImplementedException();
+        return _context.Products.FirstOrDefault(p => p.Name == name);
     }
 
     public Product? GetById(Guid id)
     {
-        throw new NotImplementedException();
+        return _context.Products.Find(id);
     }
 
     public bool Remove(Guid id)
     {
-        throw new NotImplementedException();
+        var product = _context.Products.Find(id);
+        if (product is null) return false;
+
+        _context.Products.Remove(product);
+        _context.SaveChanges();
+        return true;
     }
 }

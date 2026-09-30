@@ -704,3 +704,6 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,csharp,macos,node,aspnetcore
+
+
+*.db

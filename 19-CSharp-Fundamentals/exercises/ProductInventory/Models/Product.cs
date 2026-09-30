@@ -2,7 +2,7 @@ namespace Models;
 
 public class Product
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     public required string Name { get; set; }
 
