@@ -1,0 +1,1 @@
+public record SessionsCard(string Title, int DurationMinutes);
