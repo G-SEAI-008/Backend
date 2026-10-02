@@ -64,23 +64,31 @@ public class ContactService
 
     private List<Contact> LoadContacts()
     {
-        // wrap in try catch block (IOException || JsonException)
+
+        try
         {
-            // if file does not exist reutrn empty List<Contact>
-            //
-            // read json from file
+            if (!File.Exists(_filePath)) return new List<Contact>();
+            string json = File.ReadAllText(_filePath);
+            return JsonSerializer.Deserialize<List<Contact>>(json) ?? new List<Contact>();
 
-
-            // Deserialize content into List<Contact> and return or return empty List<Contact>
+        }
+        catch (Exception ex) when (ex is IOException || ex is JsonException)
+        {
+            Console.WriteLine($"Error loading contacts:  {ex.Message}");
             return new List<Contact>();
         }
     }
 
     private void SaveContacts(List<Contact> contacts)
     {
-        // wrap in try catch block (IOException || UnauthorizedAccessException)
-        //
-        // Serialize contact into json
-        // write to file
+        try
+        {
+            string json = JsonSerializer.Serialize(contacts, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_filePath, json);
+        }
+        catch (Exception ex) when (ex is IOException || ex is JsonException)
+        {
+            Console.WriteLine($"Error saving contacts:  {ex.Message}");
+        }
     }
 }
