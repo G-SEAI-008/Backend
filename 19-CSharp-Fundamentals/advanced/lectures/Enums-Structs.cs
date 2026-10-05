@@ -5,19 +5,21 @@ using System.Text.Json.Serialization;
 
 DayOfWeek today = DayOfWeek.Wednesday;
 
-// if (today == DayOfWeek.Wednesday)
-// {
-//     Console.WriteLine($"Today is wednesday");
-// }
+if (today == DayOfWeek.Wednesday)
+{
+    Console.WriteLine($"Today is wednesday");
+}
 
 
-// switch (today)
-// {
-//     case DayOfWeek.Friday:
-//         Console.WriteLine($"It's friday");
-//     default:
-//         Console.WriteLine($"");
-// }
+switch (today)
+{
+    case DayOfWeek.Friday:
+        Console.WriteLine($"It's friday");
+        break;
+    default:
+        Console.WriteLine($"");
+        break;
+}
 
 
 
