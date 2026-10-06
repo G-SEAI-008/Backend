@@ -14,12 +14,14 @@ public class DealNotifier
     }
     public void Subscribe(PricingService pricing)
     {
+        pricing.PriceChanged += OnPriceChanged;
         // subscribe
     }
 
     public void OnPriceChanged(object? sender, PriceChangedEventArgs e)
     {
-        // add reaction to price changed event 
-        // filter when this fill be triggerd
+        if (!_filter(e)) return;
+
+        Console.WriteLine($"[DEAL] Good news! {e.Book.Title} dropped from {e.OldPrice:C} to {e.NewPrice:C}");
     }
 }

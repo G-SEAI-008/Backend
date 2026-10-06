@@ -8,7 +8,9 @@ public class CatalogService
     private readonly Dictionary<string, Book> _books = new();
 
     // add EventHandler for BookAddded
+    public event EventHandler<BookAddedEventArgs>? BookAdded;
     // add EventHandler for BookRemoved
+    public event EventHandler<BookRemovedEventArgs>? BookRemoved;
 
     public bool AddBook(Book book)
     {
@@ -18,6 +20,7 @@ public class CatalogService
         _books[book.Isbn] = book;
 
         // trigger book added event
+        OnBookAdded(new BookAddedEventArgs(book, DateTimeOffset.UtcNow));
         return true;
     }
 
@@ -27,6 +30,7 @@ public class CatalogService
         _books.Remove(isbn);
 
         // trigger book removed event
+        OnBookRemoved(new BookRemovedEventArgs(isbn, DateTimeOffset.UtcNow));
         return true;
     }
 
@@ -40,6 +44,7 @@ public class CatalogService
     public bool TryGet(string isbn, out Book book) => _books.TryGetValue(isbn, out book!);
 
 
-    // add method to raise event for book added
-    // add method to raise event for book removed
+
+    protected virtual void OnBookAdded(BookAddedEventArgs e) => BookAdded?.Invoke(this, e);
+    protected virtual void OnBookRemoved(BookRemovedEventArgs e) => BookRemoved?.Invoke(this, e);
 }

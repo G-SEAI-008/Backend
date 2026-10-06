@@ -11,7 +11,7 @@ public class PricingService
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
     }
 
-    // add EventHandler for PriceChanged
+    public event EventHandler<PriceChangedEventArgs>? PriceChanged;
 
     public bool SetPrice(string isbn, decimal newPrice)
     {
@@ -22,11 +22,11 @@ public class PricingService
         var updated = book with { Price = newPrice };
         _catalog.UpdateBook(updated);
 
-        // trigger event for price changed
+        OnPriceChanged(new PriceChangedEventArgs(updated, old, newPrice, DateTimeOffset.UtcNow));
 
         return true;
     }
 
 
-    // add method to trigger event
+    protected virtual void OnPriceChanged(PriceChangedEventArgs e) => PriceChanged?.Invoke(this, e);
 }
