@@ -1,0 +1,64 @@
+using System.Collections.Concurrent;
+
+
+// Keeps users in memory. The data is lost when the app stops.
+public class UserService
+{
+    // ConcurrentDictionary is safe to use from several requests at the same time,
+    // which matters because this service is registered as a singleton.
+    private readonly ConcurrentDictionary<Guid, User> _users = new();
+
+    public Task<IReadOnlyList<UserResponseDto>> GetAllAsync()
+    {
+        IReadOnlyList<UserResponseDto> users = _users.Values
+            .OrderBy(u => u.CreatedAt)
+            .Select(ToDto)
+            .ToList();
+        return Task.FromResult(users);
+    }
+
+    public Task<UserResponseDto?> GetByIdAsync(Guid id)
+    {
+        var user = _users.TryGetValue(id, out var found) ? ToDto(found) : null;
+        return Task.FromResult(user);
+    }
+
+    public Task<bool> ExistsAsync(Guid id)
+    {
+        return Task.FromResult(_users.ContainsKey(id));
+    }
+
+    public Task<UserResponseDto> CreateAsync(CreateUserDto dto)
+    {
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Name = dto.Name,
+            Email = dto.Email,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        _users[user.Id] = user;
+        return Task.FromResult(ToDto(user));
+    }
+
+    public Task<UserResponseDto?> UpdateAsync(Guid id, UpdateUserDto dto)
+    {
+        if (!_users.TryGetValue(id, out var user))
+        {
+            return Task.FromResult<UserResponseDto?>(null);
+        }
+
+        user.Name = dto.Name;
+        user.Email = dto.Email;
+        return Task.FromResult<UserResponseDto?>(ToDto(user));
+    }
+
+    public Task<bool> DeleteAsync(Guid id)
+    {
+        return Task.FromResult(_users.TryRemove(id, out _));
+    }
+
+    private static UserResponseDto ToDto(User user) =>
+        new(user.Id, user.Name, user.Email, user.CreatedAt);
+}

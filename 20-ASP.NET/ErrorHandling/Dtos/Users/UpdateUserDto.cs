@@ -1,0 +1,1 @@
+public record UpdateUserDto(string Name, string Email);
