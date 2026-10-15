@@ -44,4 +44,4 @@ app.UseStatusCodePages();
 app.MapUserEndpoints();
 app.MapPostEndpoints();
 
-app.Run();
+app.Run(); ;
