@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "05a7bc41-9225-4409-b96f-0b721a08d798",
+    "Timestamp": "2026-10-15T15:36:17.845411Z",
+    "Type": 0,
+    "Description": "Salary",
+    "Amount": 200000,
+    "TransactionDate": "2026-10-15T15:35:37.187535Z"
+  },
+  {
+    "Id": "3ca622ea-6b63-4175-b295-d01404ef2db0",
+    "Timestamp": "2026-10-15T15:36:17.845478Z",
+    "Type": 1,
+    "Description": "Food",
+    "Amount": 20,
+    "TransactionDate": "2026-10-15T15:36:06.415935Z"
+  },
+  {
+    "Id": "4827f344-31b0-48a0-b670-179811d1d35d",
+    "Timestamp": "2026-10-15T15:36:17.84455Z",
+    "Type": 1,
+    "Description": "books",
+    "Amount": 400,
+    "TransactionDate": "2026-10-15T15:36:17.844508Z"
+  }
+]
