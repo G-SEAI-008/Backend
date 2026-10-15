@@ -1,4 +1,4 @@
-using BlogApi.Dtos.User;
+using BlogApi.Dtos.Users;
 
 namespace BlogApi.Services;
 
