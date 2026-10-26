@@ -4,8 +4,10 @@ using BudgetApi.Models;
 
 namespace BudgetApi.Services;
 
+// Keeps transactions in memory. The data is lost when the app stops.
 public class TransactionService : ITransactionService
 {
+    // Safe to use from several requests at the same time, which matters for a singleton.
     private readonly ConcurrentDictionary<Guid, Transaction> _transactions = new();
 
     public Task<IReadOnlyList<TransactionResponseDto>> GetAllAsync()
@@ -17,6 +19,7 @@ public class TransactionService : ITransactionService
         return Task.FromResult(transactions);
     }
 
+    // Both dates are inclusive. A transaction's day is the calendar date of its own Timestamp.
     public Task<IReadOnlyList<TransactionResponseDto>> GetInRangeAsync(DateOnly start, DateOnly end)
     {
         IReadOnlyList<TransactionResponseDto> transactions = _transactions.Values
@@ -60,10 +63,10 @@ public class TransactionService : ITransactionService
             return Task.FromResult<TransactionResponseDto?>(null);
         }
 
-        transaction.Type = dto.Type ?? transaction.Type;
-        transaction.Description = dto.Description ?? transaction.Description;
-        transaction.Amount = dto.Amount ?? transaction.Amount;
-        transaction.Timestamp = dto.Timestamp ?? transaction.Timestamp;
+        transaction.Type = dto.Type!.Value;
+        transaction.Description = dto.Description;
+        transaction.Amount = dto.Amount;
+        transaction.Timestamp = dto.Timestamp!.Value;
         return Task.FromResult<TransactionResponseDto?>(ToDto(transaction));
     }
 
