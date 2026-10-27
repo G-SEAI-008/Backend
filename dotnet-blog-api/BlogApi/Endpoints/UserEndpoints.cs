@@ -96,7 +96,6 @@ public static class UserEndpoints
 
         // Remove the user's posts first so no post points to a missing user.
         // Once the data lives in a database, cascade delete does this for us.
-        await postService.DeleteByUserAsync(id);
         await userService.DeleteAsync(id);
         return TypedResults.NoContent();
     }

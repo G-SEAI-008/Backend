@@ -1,40 +1,45 @@
 using System.Collections.Concurrent;
+using BlogApi.Data;
 using BlogApi.Dtos.Users;
 using BlogApi.Errors;
 using BlogApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApi.Services;
 
 // Keeps users in memory. The data is lost when the app stops.
 public class UserService : IUserService
 {
-    // ConcurrentDictionary is safe to use from several requests at the same time,
-    // which matters because this service is registered as a singleton.
-    private readonly ConcurrentDictionary<Guid, User> _users = new();
 
-    public Task<IReadOnlyList<UserResponseDto>> GetAllAsync()
+
+    private readonly ApplicationDbContext _db;
+
+    public UserService(ApplicationDbContext db)
     {
-        IReadOnlyList<UserResponseDto> users = _users.Values
-            .OrderBy(u => u.CreatedAt)
-            .Select(ToDto)
-            .ToList();
-        return Task.FromResult(users);
+        _db = db;
     }
 
-    public Task<UserResponseDto?> GetByIdAsync(Guid id)
+    public async Task<IReadOnlyList<UserResponseDto>> GetAllAsync()
     {
-        var user = _users.TryGetValue(id, out var found) ? ToDto(found) : null;
-        return Task.FromResult(user);
+
+        return await _db.Users.AsNoTracking().OrderBy(u => u.CreatedAt).Select(u => new UserResponseDto(u.Id, u.Name, u.Email, u.CreatedAt)).ToListAsync();
     }
 
-    public Task<bool> ExistsAsync(Guid id)
+    public async Task<UserResponseDto?> GetByIdAsync(Guid id)
     {
-        return Task.FromResult(_users.ContainsKey(id));
+
+        return await _db.Users.AsNoTracking().Where(u => u.Id == id).Select(u => new UserResponseDto(u.Id, u.Name, u.Email, u.CreatedAt)).FirstOrDefaultAsync();
     }
 
-    public Task<UserResponseDto> CreateAsync(CreateUserDto dto)
+    public async Task<bool> ExistsAsync(Guid id)
     {
-        EnsureEmailIsFree(dto.Email, null);
+        return await _db.Users.AnyAsync(u => u.Id == id);
+
+    }
+
+    public async Task<UserResponseDto> CreateAsync(CreateUserDto dto)
+    {
+        await EnsureEmailIsFree(dto.Email, null);
 
         var user = new User
         {
@@ -44,34 +49,47 @@ public class UserService : IUserService
             CreatedAt = DateTimeOffset.UtcNow
         };
 
-        _users[user.Id] = user;
-        return Task.FromResult(ToDto(user));
+        _db.Users.Add(user);
+        await _db.SaveChangesAsync();
+        return ToDto(user);
     }
 
-    public Task<UserResponseDto?> UpdateAsync(Guid id, UpdateUserDto dto)
+    public async Task<UserResponseDto?> UpdateAsync(Guid id, UpdateUserDto dto)
     {
-        if (!_users.TryGetValue(id, out var user))
+
+        var user = await _db.Users.FindAsync(id);
+        if (user is null)
         {
-            return Task.FromResult<UserResponseDto?>(null);
+            return null;
         }
 
-        EnsureEmailIsFree(dto.Email!, id);
+        await EnsureEmailIsFree(dto.Email!, id);
 
         user.Name = dto.Name!;
         user.Email = dto.Email!;
-        return Task.FromResult<UserResponseDto?>(ToDto(user));
+
+        await _db.SaveChangesAsync();
+        return ToDto(user);
     }
 
-    public Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        return Task.FromResult(_users.TryRemove(id, out _));
+        var user = await _db.Users.FindAsync(id);
+        if (user is null)
+        {
+            return false;
+        }
+
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync();
+        return true;
     }
 
-    // Throws when another user already has this email. The exception handler turns it into a 409.
-    private void EnsureEmailIsFree(string email, Guid? currentUserId)
+    private async Task EnsureEmailIsFree(string email, Guid? currentUserId)
     {
-        var taken = _users.Values.Any(u =>
-            u.Id != currentUserId && string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));
+
+        var normalisedEmail = email.ToLower();
+        var taken = await _db.Users.AnyAsync(u => u.Id != currentUserId && u.Email.ToLower() == normalisedEmail);
 
         if (taken)
         {

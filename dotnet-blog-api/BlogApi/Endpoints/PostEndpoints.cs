@@ -40,9 +40,9 @@ public static class PostEndpoints
         return group;
     }
 
-    private static async Task<Ok<IReadOnlyList<PostResponseDto>>> GetAllPosts(IPostService postService)
+    private static async Task<Ok<IReadOnlyList<PostResponseDto>>> GetAllPosts(string? search, IPostService postService)
     {
-        return TypedResults.Ok(await postService.GetAllAsync());
+        return TypedResults.Ok(await postService.GetAllAsync(search));
     }
 
     private static async Task<Results<Ok<PostResponseDto>, NotFound>> GetPostById(Guid id, IPostService postService)
