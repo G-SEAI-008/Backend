@@ -1,17 +1,18 @@
 using BlogApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogApi.Data;
 
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
 
 
-    public DbSet<User> Users => Set<User>();
     public DbSet<Post> Posts => Set<Post>();
 
 
@@ -27,9 +28,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(user =>
         {
             user.Property(u => u.Name).HasMaxLength(100).IsRequired();
-            user.Property(u => u.Email).HasMaxLength(256).IsRequired();
 
-            user.HasIndex(u => u.Email).IsUnique();
         });
 
         modelBuilder.Entity<Post>(post =>
