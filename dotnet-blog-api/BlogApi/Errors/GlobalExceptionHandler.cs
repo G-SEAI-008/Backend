@@ -18,7 +18,6 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         var (statusCode, title) = exception switch
         {
-            ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             // Thrown by the framework, for example when the JSON body cannot be read.
             BadHttpRequestException badRequest => (badRequest.StatusCode, "Bad request"),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")

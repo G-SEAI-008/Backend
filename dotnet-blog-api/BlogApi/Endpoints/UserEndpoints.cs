@@ -30,23 +30,6 @@ public static class UserEndpoints
             .WithSummary("List the posts written by one user")
             .ProducesValidationProblem();
 
-        group.MapPost("/", CreateUser)
-            .WithName("CreateUser")
-            .WithSummary("Create a user")
-            .ProducesValidationProblem()
-            .ProducesProblem(StatusCodes.Status409Conflict);
-
-        group.MapPut("/{id:guid}", UpdateUser)
-            .WithName("UpdateUser")
-            .WithSummary("Replace a user's name and email")
-            .ProducesValidationProblem()
-            .ProducesProblem(StatusCodes.Status409Conflict);
-
-        group.MapDelete("/{id:guid}", DeleteUser)
-            .WithName("DeleteUser")
-            .WithSummary("Delete a user and their posts")
-            .ProducesValidationProblem();
-
         return group;
     }
 
@@ -73,30 +56,6 @@ public static class UserEndpoints
         return TypedResults.Ok(await postService.GetByUserAsync(id));
     }
 
-    private static async Task<Created<UserResponseDto>> CreateUser(CreateUserDto dto, IUserService userService)
-    {
-        var user = await userService.CreateAsync(dto);
-        return TypedResults.Created($"/users/{user.Id}", user);
-    }
 
-    private static async Task<Results<Ok<UserResponseDto>, NotFound>> UpdateUser(
-        Guid id, UpdateUserDto dto, IUserService userService)
-    {
-        var user = await userService.UpdateAsync(id, dto);
-        return user is null ? TypedResults.NotFound() : TypedResults.Ok(user);
-    }
 
-    private static async Task<Results<NoContent, NotFound>> DeleteUser(
-        Guid id, IUserService userService, IPostService postService)
-    {
-        if (!await userService.ExistsAsync(id))
-        {
-            return TypedResults.NotFound();
-        }
-
-        // Remove the user's posts first so no post points to a missing user.
-        // Once the data lives in a database, cascade delete does this for us.
-        await userService.DeleteAsync(id);
-        return TypedResults.NoContent();
-    }
 }

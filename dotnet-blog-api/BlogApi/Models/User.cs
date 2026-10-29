@@ -1,12 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace BlogApi.Models;
 
-public class User
+public class User : IdentityUser<Guid>
 {
-    public required Guid Id { get; set; }
 
     public required string Name { get; set; } = string.Empty;
-
-    public required string Email { get; set; } = string.Empty;
 
     public required DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.Now;
 

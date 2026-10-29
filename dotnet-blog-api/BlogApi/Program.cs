@@ -1,7 +1,9 @@
 using BlogApi.Data;
 using BlogApi.Endpoints;
 using BlogApi.Errors;
+using BlogApi.Models;
 using BlogApi.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -14,9 +16,15 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentityCore<User>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+}).AddRoles<IdentityRole<Guid>>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddOpenApi();
 
@@ -31,9 +39,10 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
     await db.Database.MigrateAsync();
-    await DbSeeder.SeedAsync(db);
+    await DbSeeder.SeedAsync(db, userManager);
 }
 
 app.UseExceptionHandler();
@@ -42,5 +51,6 @@ app.UseStatusCodePages();
 
 app.MapUserEndpoints();
 app.MapPostEndpoints();
+app.MapAuthEndpoints();
 
-app.Run(); ;
+app.Run();
