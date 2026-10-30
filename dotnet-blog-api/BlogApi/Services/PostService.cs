@@ -43,10 +43,8 @@ public class PostService : IPostService
         return await _db.Posts.AsNoTracking().Where(p => p.Id == id).Select(p => new PostResponseDto(p.Id, p.UserId, p.Title, p.Content, p.User.Name, p.PublishedAt)).FirstOrDefaultAsync();
     }
 
-    public async Task<PostResponseDto?> CreateAsync(CreatePostDto dto)
+    public async Task<PostResponseDto?> CreateAsync(Guid userId, CreatePostDto dto)
     {
-        // Validation has already checked that UserId is present.
-        var userId = dto.UserId!.Value;
 
         var user = await _db.Users.FindAsync(userId);
 

@@ -11,8 +11,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-
-
     public DbSet<Post> Posts => Set<Post>();
 
 
