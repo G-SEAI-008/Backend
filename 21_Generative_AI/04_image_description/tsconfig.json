@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    /* Base Options: */
+    "esModuleInterop": true,
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    /* Node Options*/
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "module": "preserve",
+    "noEmit": false,
+    "rootDir": "./",
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
