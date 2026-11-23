@@ -1,0 +1,30 @@
+import type { RequestHandler } from 'express';
+import Anthropic from '@anthropic-ai/sdk';
+import { z } from 'zod';
+
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const PromptBody = z.object({
+  prompt: z.string().min(1),
+});
+
+export const claudeChat: RequestHandler = async (req, res) => {
+  const { prompt } = PromptBody.parse(req.body);
+
+  const message = await client.messages.create({
+    model: 'claude-haiku-5-5',
+    max_tokens: 1024,
+    system:
+      'You support customers of a company that sells very fluffy pillows. Answer in a very factual and neutral tone, using only one sentence',
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  //   console.log(message);
+
+  const text = message.content
+    .filter((block) => block.type === 'text')
+    .map((block) => block.text)
+    .join('');
+
+  res.json({ result: text });
+};

@@ -1,0 +1,53 @@
+{
+	"compilerOptions": {
+		/* Runtime */
+		"target": "ES2025", // JavaScript version that TypeScript outputs.
+		"lib": ["ES2025"], // Built-in APIs available in Node.
+		"types": ["node"], // Makes Node types available, e.g. process, Buffer, node:fs.
+
+		/* Node Module Resolution */
+		"module": "NodeNext", // Use Node's modern ESM/CommonJS rules.
+		"moduleResolution": "NodeNext", // Resolve imports like Node does, including package.json "imports" and "exports".
+		"customConditions": ["development"], // Lets TS use "development" entries from package.json "imports".
+
+		/* Build Output */
+		"rootDir": "./src", // TypeScript source files are in src.
+		"outDir": "dist", // Compiled JavaScript files are written to dist.
+		"rewriteRelativeImportExtensions": true, // Rewrites "./file.ts" to "./file.js" in dist.
+
+		/* Type Safety */
+		"noUncheckedIndexedAccess": true, // Treat array/object lookups as possibly undefined.
+
+		/* Import And Syntax Checks */
+		"verbatimModuleSyntax": true, // Requires type-only imports to use "import type".
+		"isolatedModules": true, // Ensures each file can be transpiled independently.
+		"erasableSyntaxOnly": true, // When Node runs .ts directly in development.
+
+		/* Common Convenience */
+		"skipLibCheck": true, // Skip checking dependency .d.ts files.
+		"resolveJsonModule": true // Allows JSON imports. With NodeNext, use: `import data from "./data.json" with { type: "json" };`
+
+		/* Default in TS7: Uncomment, if using TS5 or TS6 */
+		// "strict": true, // Enable all main strict type-checking rules.
+		// "noUncheckedSideEffectImports": true, // Error on unresolved side-effect imports like import "./setup.ts".
+
+		/* Optional: uncomment only when needed */
+
+		// "allowJs": true, // Use during JS → TS migration.
+		// "checkJs": true, // Also type-check .js files when allowJs is enabled.
+		// "noImplicitOverride": true, // Use when your code has classes that extend other classes.
+		// "noFallthroughCasesInSwitch": true, // Catch missing break/return in switch cases.
+		// "noImplicitReturns": true, // Error when not all function paths return a value.
+		// "exactOptionalPropertyTypes": true, // Make optional properties stricter.
+		// "noUnusedLocals": true, // Error on unused local variables.
+		// "noUnusedParameters": true, // Error on unused function parameters. Can be noisy in Express handlers.
+		// "noEmit": true, // Use only if another tool emits JS, e.g. Vite/esbuild.
+		/*
+    "paths": {
+      "#*": ["./src/*"]
+    }
+    */
+		// Use "paths" only for TS/bundler aliases. For Node runtime aliases, prefer package.json "imports".
+	},
+	"include": ["src"] // TypeScript checks and compiles files inside src.
+}
